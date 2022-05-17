@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+
 # from flask_migrate import Migrate
 from flask import Flask
 
@@ -11,24 +12,27 @@ db = SQLAlchemy(app)
 # migrate = Migrate(app, db)
 
 
-class Person(db.Model):
+class Todo(db.Model):
+
+    __tablename__ = "todos"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    email = db.Column(db.String, nullable=False)
+    description = db.Column(db.String(), nullable=False)
 
     def __repr__(self) -> str:
-        return f"<Person ID: {self.id}, name: {self.name}, email: {self.email}>"
+        return f"<Todo ID: {self.id}, name: {self.description}>"
 
 
-db.create_all()     # without this, the table does not get created
+# create tables from Models
+db.create_all()
 
 
 db.session.add(
-    Person(name="Kehinde Fasunle", email="kfasunle@gmail.com")
-)   # changes the state to Pending
+    Todo(description="Life is very interesting. I love to make money than I need.")
+)  # changes the state to Pending
 
 db.session.commit()  # changes the state to committed
 
-persons = Person.query.all()  # changes the state to Flushed
+todos = Todo.query.all()  # changes the state to Flushed
 
-print(persons)
+print("A todo item\n", todos[0])
+print("A list of all todos\n", todos)
