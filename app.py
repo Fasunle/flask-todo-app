@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-
-# from flask_migrate import Migrate
+from flask_migrate import Migrate
 from flask import Flask
 
 
@@ -9,7 +8,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://kehinde@localhost:5432/exa
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
-# migrate = Migrate(app, db)
+migrate = Migrate(app, db)
 
 
 class Todo(db.Model):
