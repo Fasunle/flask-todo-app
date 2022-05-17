@@ -1,48 +1,34 @@
-from psycopg2 import connect
+from flask_sqlalchemy import SQLAlchemy
+# from flask_migrate import Migrate
 from flask import Flask
 
-# web app instance
+
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://kehinde@localhost:5432/example"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# connect asynchronously
-try:
-    connection = connect("dbname=students")
-    cursor = connection.cursor()
-    print("connected to database")
-except:
-    print("Unable to connect to the database")
+db = SQLAlchemy(app)
+# migrate = Migrate(app, db)
 
 
-@app.route('/')
-def index():
-    return "<h1>Hello World!</h1>"
+class Person(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, nullable=False)
+
+    def __repr__(self) -> str:
+        return f"<Person ID: {self.id}, name: {self.name}, email: {self.email}>"
 
 
-@app.route('/createtb/<tbname>')
-def createTb(tbname):
-    # create a table
-    cursor.execute(
-        f"CREATE TABLE IF NOT EXISTS {tbname} (id INTEGER PRIMARY KEY, name TEXT NOT NULL, class TEXT NOT NULL);"
-    )
-
-    # save the transaction
-    connection.commit()
-    return f"<h1>Created {tbname} Table successfully</h1>"
+db.create_all()     # without this, the table does not get created
 
 
-@app.route('/add-new-student/<string:name>/<int:id>')
-def addNewStudent(name, id):
-    cursor.execute(
-        f"INSERT INTO  juniors (id, name, class) VALUES ({id}, {name}, 'JSS 3');"
-    )
+db.session.add(
+    Person(name="Kehinde Fasunle", email="kfasunle@gmail.com")
+)   # changes the state to Pending
 
-    connection.commit()  # ensure to commit the transaction
+db.session.commit()  # changes the state to committed
 
-    return f"<h1>Welcome {name} to our school!"
+persons = Person.query.all()  # changes the state to Flushed
 
-
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
-    # # close the connection
-    cursor.close()
-    connection.close()
+print(persons)
