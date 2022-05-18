@@ -8,6 +8,15 @@
         .hidden{
             display: none;
         }
+
+        ul{
+            padding: 0;
+            margin: 0;
+        }
+
+        ul li:nth-child(2n){
+            background-color: #77807442;
+        }
     </style>
     <title>Todo App</title>
 </head>
@@ -18,13 +27,12 @@
     </form>
 
     <ul id="todos">
-        {% if data %}
+        {% if not data %}
+            <h3>There is no todos in the database. Add some todo items</h3>
+        {% else %}
             {% for d in data %}
                 <li>{{ d.description }}</li>
             {% endfor %}
-
-        {% else %}
-            <h3>There is no todos in the database. Add some todo items~</h3>
         {% endif %}
     </ul>
 
@@ -56,12 +64,6 @@
                 document.getElementById('error').className = '';
             })
         };
-
-            // onsubmit
-                // make post request
-                // handle the response
-
-
     </script>
 </body>
 </html>
