@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask import Flask
+from flask import Flask, jsonify, render_template, request
 
 
 app = Flask(__name__)
@@ -22,20 +22,35 @@ class Todo(db.Model):
         return f"<Todo ID: {self.id}, description: {self.description} Completed: {self.completed}>"
 
 
-db.create_all()  #   create tables for the specified schema(s)
-
-
 @app.route("/")
 def index():
-    return "Hello world"
+    return render_template("index.html", data=Todo.query.all())
 
-db.session.add(
-    Todo(description="Life is very interesting. I love to make money than I need.")
-)  # changes the state to Pending
 
-db.session.commit()  # changes the state to committed
+@app.route("/todos/create", methods=["POST"])
+def create_todo():
+    """Create a todo item"""
+    body = {}
+    error = False
 
-todos = Todo.query.all()  # changes the state to Flushed
+    try:
+        description = request.get_json()["description"]
+        todo = Todo(description=description)
+        body["description"] = todo.description
+        db.session.add(todo)
+        db.session.commit()
+    except:
+        error = True
+        db.session.rollback()
+        print(sys.exc_info())
+    finally:
+        db.session.close()
+
+        if error == True:
+            abort(400)
+        else:
+            return jsonify(body)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
