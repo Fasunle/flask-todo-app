@@ -58,7 +58,8 @@ def create_todo():
 
     try:
         description = request.get_json()["description"]
-        todo = Todo(description=description)
+        # construct the todo item
+        todo = Todo(description=description, list_id=category_id)
         body["description"] = todo.description
         db.session.add(todo)
         db.session.commit()
