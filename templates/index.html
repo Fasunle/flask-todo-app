@@ -52,6 +52,8 @@
 
             const desc = descInput.value;
             const category = todolist.value;
+            // simple validation
+            if(category === "Select a category" || desc === '') {return;}
 
             fetch('/todos/create',{
                 method: "POST",
