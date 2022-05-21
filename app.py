@@ -58,6 +58,8 @@ def create_todo():
 
     try:
         description = request.get_json()["description"]
+        if not description:
+            return
         # construct the todo item
         todo = Todo(description=description, list_id=category_id)
         body["description"] = todo.description
