@@ -1,4 +1,5 @@
 import sys
+from unicodedata import category, name
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask import Flask, abort, jsonify, render_template, request
@@ -46,6 +47,14 @@ def create_todo():
     """Create a todo item"""
     body = {}
     error = False
+    category_id = 0
+
+    # if the category does not exist, do nothing!
+    category = request.get_json()["category"]
+    if TodoList.query.filter_by(name=category).first():
+        category_id = TodoList.query.filter_by(name=category).first().id
+    else:
+        return
 
     try:
         description = request.get_json()["description"]
