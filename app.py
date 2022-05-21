@@ -1,5 +1,4 @@
 import sys
-from unicodedata import category, name
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask import Flask, abort, jsonify, render_template, request
