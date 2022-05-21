@@ -18,7 +18,7 @@ class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(), nullable=False)
     completed = db.Column(db.Boolean, nullable=False, default=False)
-    list_id = db.Column(db.Integer, db.ForeignKey("todolists.id"), nullable=True)
+    list_id = db.Column(db.Integer, db.ForeignKey("todolists.id"), nullable=False)
 
     def __repr__(self) -> str:
         return f"<Todo ID: {self.id}, description: {self.description} Completed: {self.completed}>"
